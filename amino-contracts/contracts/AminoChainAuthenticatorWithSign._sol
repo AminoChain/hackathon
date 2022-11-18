@@ -1,0 +1,71 @@
+// SPDX-License-Identifier: GPL-2.0
+
+pragma solidity ^0.8.7;
+
+import "./interfaces/IAminoChainAuthenticator.sol";
+import "./AminoChainDonation.sol";
+import "./interfaces/IAminoChainMarketplace.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+/** @title AminoChain Authenticator
+ *  @notice Handles the minting of tokenized stem cells and listing
+ *  them on the marketplace
+ */
+contract AminoChainAuthenticator is IAminoChainAuthenticator, IERC721Receiver, Ownable {
+    IAminoChainDonation immutable public nft;
+    IAminoChainMarketplace immutable public marketplace;
+    IERC20 immutable public usdc;
+    using ECDSA for bytes32;
+
+    constructor(
+        address nftAddress,
+        address marketplaceAddress,
+        address usdcAddress
+    ) {
+        nft = IAminoChainDonation(nftAddress);
+        nft.setApprovalForAll(marketplaceAddress, true);
+        marketplace = IAminoChainMarketplace(marketplaceAddress);
+        usdc = IERC20(usdcAddress);
+    }
+
+    function isRegistered(address donor) public view returns (bool) {
+        return nft.getTokenIdsByDonor(donor).length != 0;
+    }
+
+    function onERC721Received(
+        address,
+        address,
+        uint256,
+        bytes calldata
+    ) external pure returns (bytes4) {
+        return IERC721Receiver.onERC721Received.selector;
+    }
+
+    function hash(string calldata str) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(str));
+    }
+
+    function getRegistrationHash(address donor, bytes32 biodataHash) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(donor, biodataHash));
+    }
+
+    function register(AminoChainLibrary.RegistrationData calldata data) public onlyOwner {
+        bytes32 registrationHash = getRegistrationHash(data.donor, data.hlaHash);
+        bytes32 signedMessageHash = registrationHash.toEthSignedMessageHash();
+        address signer = signedMessageHash.recover(data.signature);
+        require(signer == data.donor, "Signature does not come from donor");
+
+        // actual registration
+
+        uint256[] memory tokenIds = nft.mint(data);
+
+        for (uint256 i = 0; i < tokenIds.length; i++) {
+            marketplace.listItem(tokenIds[i], data.amounts[i], 1400, data.donor, data.biobank);
+        }
+
+        emit UserRegistered(data.donor, data.biobank, tokenIds, data.amounts);
+    }
+}

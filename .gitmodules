@@ -1,0 +1,15 @@
+[submodule "amino-contracts"]
+	path = amino-contracts
+	url = https://github.com/AminoChain/amino-contracts.git
+[submodule "Amino-Vercel-App"]
+	path = Amino-Vercel-App
+	url = https://github.com/AminoChain/Amino-Vercel-App.git
+[submodule "amino-subgraph"]
+	path = amino-subgraph
+	url = https://github.com/AminoChain/amino-subgraph.git
+[submodule "amino-backend"]
+	path = amino-backend
+	url = https://github.com/AminoChain/amino-backend.git
+[submodule "tracking_client"]
+	path = tracking_client
+	url = https://github.com/AminoChain/tracking_client.git
