@@ -10,6 +10,6 @@
 [submodule "amino-backend"]
 	path = amino-backend
 	url = https://github.com/AminoChain/amino-backend.git
-[submodule "tracking_client"]
-	path = tracking_client
-	url = https://github.com/AminoChain/tracking_client.git
+[submodule "delivery_client"]
+	path = delivery_client
+	url = https://github.com/AminoChain/delivery_client.git
