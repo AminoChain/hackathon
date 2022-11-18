@@ -104,3 +104,14 @@ This data can then be fetched by verified doctors/reseachers prior to their purc
 [1]: https://github.com/AminoChain/amino-backend
 [2]: https://github.com/AminoChain/amino-contracts/blob/master/contracts/AminoChainAuthenticator.sol
 [3]: https://github.com/AminoChain/amino-contracts/blob/master/contracts/AminoChainMarketplace.sol
+
+# Contract Deployments on Polygon Mumbai:
+
+```
+MockUSDC: 0xC203D5b1356cc1C71791185Cc51aDbd2226221B6
+AminoChainMarketplace: 0x66d37c30B6fFAC63F47658432a33ee5012C34188
+AminoChainDonation: 0x61048058C2ac5BcCD10aeF9BaBDC56250DC5753B
+AminoChainAuthenticator: 0xcB14fc2373e536ffb131795A2eabD8Cab57bd105
+```
+
+
